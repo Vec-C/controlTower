@@ -1,6 +1,6 @@
 from src.controlTower.utils.io import reader
+from src.controlTower import config
 import datetime
-import os
 import re
 
 class receipt:
@@ -14,19 +14,20 @@ class receipt:
         self.files          = files
         self.id             = 0
         self.name           = name
-        self.status         = "init"
+        self.status         = config.INIT
 
 class design:
 
-    def __init__(self, name: str, path: str):
+    def __init__(self, name: str, version: str, path: str):
         self.current       = None
         self.creation_date = datetime.date.today().isoformat()
         self.data          = reader.read_data(path)
         self.name          = name
         self.path          = path
         self.set_steps()
-        self.status        = "init"
+        self.status        = config.INIT
         self.steps         = []
+        self.version       = version
 
     def set_steps(self):
         commands     = re.search('^[^\n|^#](.*?):(.*?)\n(\t(.*?))?$', self.data).group(3)
@@ -43,13 +44,13 @@ class design:
     def setStatus(self, status, msg=""):
         self.current.execution_date = datetime.date.today().isoformat()
         self.current.status         = status
-        self.status                 = "processing"
-        if status == "error":
+        self.status                 = config.PROCESSING
+        if status == config.ERROR:
             self.current.error      = msg
         else:
             next = self.current.id + 1
             if next > len(self.steps):
-                self.status         = "finished"
+                self.status         = config.SUCCESS
             else:
                 self.current        = self.steps[next]
 
