@@ -1,8 +1,7 @@
 # all: down build up test
 # VARIABLES  | $ACCOUNT  | $IP | $API
+# AGREGAR ENTER AL FINAL DEL ARCHIVO
 .ONESHELL:
-
-all: down build up
 
 set:
 	export AWS_PROFILE=$(ACCOUNT); sh getTasks.sh -a; sh setELBS.sh

@@ -1,26 +1,34 @@
-from src.controlTower.domain.account import account
-from src.controlTower.domain.design import design
-from src.controlTower import config
-from invoke import run, Failure
+from controlTower.domain.model import Account, Design
+from controlTower import config
+from invoke import run, Failure, UnexpectedExit
 
-class architect:
 
-    def __init__(self, accoun: account, design: design):
+class Architect:
+
+    def __init__(self, account: Account, design: Design):
         self.account = account
         self.design  = design
 
     def execute(self):
         if(self.design.status != config.SUCCESS):
             try:
-                process = run(f'export AWS_PROFILE={self.account.name} && make {self.design.current.name}', asynchronous=True, pty=True)
+                process = run(f'export AWS_PROFILE={self.account.name} && make {self.design.current.name}', asynchronous=True)
             except Failure:
-                self.design.setStatus(config.ERROR, process.result)
-                print(process.result)
+                self.design.setCurrentStatus(config.ERROR, str(Failure))
+                print(str(Failure))
             else:
-                self.design.setStatus(config.SUCCESS)
-            finally:
-                print(process)
+                self.design.setCurrentStatus(config.SUCCESS)
+
+            # TODO: CATCH AND PRETTY PRINT STDOUT WHEN COMMAND FAILS
+            # https://docs.pyinvoke.org/en/stable/api/runners.html#invoke.runners.Result
+            # try:
+            #     wait = process.join()
+            #     self.design.setCurrentStatus(config.SUCCESS)
+            # except UnexpectedExit:
+            #     print("Error")
+            #     self.design.setCurrentStatus(config.ERROR)
+
         else:
             print("Nothing to do")
-            return False
+        return self
 
