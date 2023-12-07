@@ -15,6 +15,6 @@ All variables can be found in:
 For testing:
 
 > Edit: ***TEST_FILE*** for the folder where your scripts and receip live.\
-> Type command: pytest
+> pytest
 
 Your progress will be saved where the ***ROOTREPOSITORY*** variable indicates.
