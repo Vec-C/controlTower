@@ -6,7 +6,8 @@
 
 Install requirements:
 
-> pip -r requirements.txt
+> pip install -r requirements.txt 
+> pip install -e ./src
 
 All variables can be found in:
 
